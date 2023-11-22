@@ -1,0 +1,6 @@
+- name: deploy machine-pi-cams
+  hosts: machine-pi-cams
+  become: True
+  become_user: root
+  roles:
+    - role: machine-pi-cams

@@ -1,0 +1,23 @@
+---
+- name: install certbot - it will install openssl
+  package:
+    name:
+      - certbot
+      - python3-certbot-dns-cloudflare
+    state: latest
+
+- name: save cf key for certbot
+  copy: content="dns_cloudflare_api_token = {{ lookup('community.general.bitwarden', 'Home Devices Certbot Credentials', field='apikey')[0] }}" dest=/root/cf-api-token.ini
+
+- name: generate certbot certificate for host
+  shell: "bash -lc 'certbot certonly --non-interactive --renew-by-default --agree-tos --text --email {{ lookup('community.general.bitwarden', 'Home Devices Certbot Credentials', field='email')[0] }} --dns-cloudflare --dns-cloudflare-credentials /root/cf-api-token.ini --cert-name \"{{ certbot_host_domain }}\" -d \"{{ certbot_host_domain }}\"'"
+  args:
+    creates: "{{certbot_live_dir}}/{{ certbot_host_domain }}/fullchain.pem"
+
+- name: install renewal cron
+  cron:
+    name: "Let's Encrypt Renewal"
+    day: "{{ certbot_renewal.day }}"
+    hour: "{{ certbot_renewal.hour }}"
+    minute: "{{ certbot_renewal.minute }}"
+    job: "certbot renew --deploy-hook \"\" > /dev/null"

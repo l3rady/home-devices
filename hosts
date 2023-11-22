@@ -1,0 +1,3 @@
+[machine-pi-cams]
+cnccam ansible_host=cnccam.home.cariss.uk
+lasercam ansible_host=lasercam.home.cariss.uk

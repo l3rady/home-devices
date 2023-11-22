@@ -1,0 +1,7 @@
+---
+certbot_live_dir: "/etc/letsencrypt/live"
+certbot_renewal:
+  day: "*"
+  hour: 0
+  minute: 0
+certbot_renewal_post_hook_cmd: ""
